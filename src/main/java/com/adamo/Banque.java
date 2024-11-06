@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 public class Banque {

@@ -34,6 +34,7 @@ public class Client {
         this.comptes = new ArrayList<>();
     }
 
+
     // Add account
     public void addCompte(Compte compte) {
         comptes.add(compte);
