@@ -1,7 +1,9 @@
 package com.adamo;
 
-import java.util.Date;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class Transaction {
     private TypeTransaction typeTransaction;
-    private final Date timestamp;
+    private final LocalDate timestamp;
     private final String reference;
     private final Compte sender;
     private final Compte receiver;
@@ -25,7 +27,7 @@ public class Transaction {
             double amount
     ) {
         this.typeTransaction = typeTransaction;
-        this.timestamp = new Date();
+        this.timestamp = LocalDate.now();
         this.reference = reference;
         this.sender = sender;
         this.receiver = receiver;
@@ -45,11 +47,11 @@ public class Transaction {
     }
 
     // Gson JSON conversion methods
-    public String toJson() {
-        return new Gson().toJson(this);
+    public String toJson() throws JsonProcessingException {
+        return JsonConverter.toJson(this);
     }
 
-    public static Transaction fromJson(String json) {
-        return new Gson().fromJson(json, Transaction.class);
+    public static Transaction fromJson(String json) throws IOException {
+        return JsonConverter.fromJsonToTransaction(json);
     }
 }
