@@ -1,7 +1,9 @@
 package com.adamo;
 
-import java.util.Date;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,8 +12,8 @@ import lombok.Setter;
 @Setter
 public class Compte {
     private final String numCompte;
-    private final Date dateCreation;
-    private Date dateUpdate;
+    private final LocalDate dateCreation;
+    private LocalDate dateUpdate;
     private Devise devise;
     private double balance;
     private final Client client;
@@ -26,8 +28,8 @@ public class Compte {
             double initialBalance
     ) {
         this.numCompte = numCompte;
-        this.dateCreation = new Date();
-        this.dateUpdate = new Date();
+        this.dateCreation = LocalDate.now();
+        this.dateUpdate = LocalDate.now();
         this.devise = devise;
         this.client = client;
         this.banque = banque;
@@ -40,7 +42,7 @@ public class Compte {
             return false; // Insufficient funds
         }
         this.balance += amount;
-        this.dateUpdate = new Date();
+        this.dateUpdate = LocalDate.now();
         return true;
     }
 
@@ -58,11 +60,11 @@ public class Compte {
     }
 
     // Gson JSON conversion methods
-    public String toJson() {
-        return new Gson().toJson(this);
+    public String toJson() throws JsonProcessingException {
+        return JsonConverter.toJson(this);
     }
 
-    public static Compte fromJson(String json) {
-        return new Gson().fromJson(json, Compte.class);
+    public static Compte fromJson(String json) throws IOException {
+        return JsonConverter.fromJsonToCompte(json);
     }
 }
