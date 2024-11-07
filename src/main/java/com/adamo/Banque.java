@@ -1,7 +1,9 @@
 package com.adamo;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import com.google.gson.Gson;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,12 +43,12 @@ public class Banque {
     }
 
     // Gson JSON conversion methods
-    public String toJson() {
-        return new Gson().toJson(this);
+    public String toJson() throws JsonProcessingException {
+        return JsonConverter.toJson(this);
     }
 
-    public static Banque fromJson(String json) {
-        return new Gson().fromJson(json, Banque.class);
+    public static Banque fromJson(String json) throws IOException {
+        return JsonConverter.fromJsonToBanque(json);
     }
 }
 
