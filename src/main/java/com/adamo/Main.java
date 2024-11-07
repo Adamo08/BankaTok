@@ -1,5 +1,7 @@
 package com.adamo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,7 +13,7 @@ public class Main {
     private static final ArrayList<Compte> comptes = new ArrayList<>();
     private static final ArrayList<Transaction> transactions = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JsonProcessingException {
         boolean running = true;
 
         while (running) {
@@ -77,8 +79,7 @@ public class Main {
         System.out.println("==================================================");
 
         System.out.print("\tClient ID (unique): ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        String id = scanner.nextLine();
 
 
 
@@ -107,9 +108,9 @@ public class Main {
         System.out.println("==================================================\n");
     }
     // Helper method to find Client by numClient
-    private static Client findClientByNum(int numClient) {
+    private static Client findClientByNum(String numClient) {
         for (Client client : clients) {
-            if (client.getNumClient() == numClient) {
+            if (client.getNumClient().equals(numClient)) {
                 return client;
             }
         }
@@ -126,18 +127,24 @@ public class Main {
             System.out.println("\n==================================================");
             System.out.println("\t\t\t\t\tFound " + count + " clients.");
             System.out.println("==================================================");
-            clients.forEach(client -> System.out.println(client.toJson()));
+            clients.forEach(client -> {
+                try {
+                    System.out.println(client.toJson());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             System.out.println("==================================================\n");
         }
     }
-    private static void findClient() {
+    private static void findClient() throws JsonProcessingException {
 
         System.out.println("\n==================================================");
         System.out.println("\t\t\t\t\tFind a Client:");
         System.out.println("==================================================");
 
         System.out.print("\tEnter Client ID: ");
-        int id = scanner.nextInt();
+        String id = scanner.nextLine();
         scanner.nextLine();
         Client client = findClientByNum(id);
 
@@ -196,11 +203,17 @@ public class Main {
             System.out.println("\n==================================================");
             System.out.println("\t\t\t\t\tFound " + count + " banks.");
             System.out.println("==================================================");
-            banques.forEach(banque -> System.out.println(banque.toJson()));
+            banques.forEach(banque -> {
+                try {
+                    System.out.println(banque.toJson());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             System.out.println("==================================================\n");
         }
     }
-    private static void findBank() {
+    private static void findBank() throws JsonProcessingException {
         System.out.println("\n==================================================");
         System.out.println("\t\t\t\t\tFind a Bank:");
         System.out.println("==================================================");
@@ -230,8 +243,7 @@ public class Main {
         }
 
         System.out.print("\tEnter Client ID: ");
-        int clientId = scanner.nextInt();
-        scanner.nextLine();
+        String clientId = scanner.nextLine();
         Client client = findClientByNum(clientId);
 
         if (client == null) {
@@ -296,7 +308,13 @@ public class Main {
             System.out.println("\n==================================================");
             System.out.println("\t\t\t\t\tFound " + count + " accounts.");
             System.out.println("==================================================");
-            comptes.forEach(c -> System.out.println(c.toJson()));
+            comptes.forEach(c -> {
+                try {
+                    System.out.println(c.toJson());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             System.out.println("==================================================\n");
         }
     }
@@ -417,7 +435,13 @@ public class Main {
             System.out.println("\n==================================================");
             System.out.println("\t\t\t\t\tFound " + count + " transactions.");
             System.out.println("==================================================");
-            transactions.forEach(tr -> System.out.println(tr.toJson()));
+            transactions.forEach(tr -> {
+                try {
+                    System.out.println(tr.toJson());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             System.out.println("==================================================\n");
         }
     }
