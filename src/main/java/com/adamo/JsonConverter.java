@@ -3,44 +3,42 @@ package com.adamo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.io.IOException;
 
-
-import java.util.HashSet;
-
-// Classe pour les méthodes de conversion JSON
 public class JsonConverter {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
-        // Configurer le mapper pour la conversion des dates
-        mapper.findAndRegisterModules(); // Nécessaire pour les LocalDate
+        // Register the JavaTimeModule to handle Java 8 date/time types like LocalDate
+        mapper.registerModule(new JavaTimeModule());
+        // Configure mapper to write dates as ISO-8601 strings (not timestamps)
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    // Convertir un objet en JSON
+    // Convert an object to JSON
     public static String toJson(Object object) throws JsonProcessingException {
         return mapper.writeValueAsString(object);
     }
 
-    // Convertir JSON en objet Client
+    // Convert JSON to Client object
     public static Client fromJsonToClient(String json) throws IOException {
         return mapper.readValue(json, Client.class);
     }
 
-    // Convertir JSON en objet Compte
+    // Convert JSON to Compte object
     public static Compte fromJsonToCompte(String json) throws IOException {
         return mapper.readValue(json, Compte.class);
     }
 
-    // Convertir JSON en objet Banque
+    // Convert JSON to Banque object
     public static Banque fromJsonToBanque(String json) throws IOException {
         return mapper.readValue(json, Banque.class);
     }
 
-    // Convertir JSON en objet Banque
+    // Convert JSON to Transaction object
     public static Transaction fromJsonToTransaction(String json) throws IOException {
         return mapper.readValue(json, Transaction.class);
     }
-
 }
