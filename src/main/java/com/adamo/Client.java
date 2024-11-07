@@ -2,7 +2,7 @@ package com.adamo;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,8 @@ public class Client {
     private String email;
     private String adresse;
     private String telephone;
+
+    @JsonManagedReference
     private ArrayList<Compte> comptes;
 
     // Constructor
@@ -36,13 +38,14 @@ public class Client {
         this.comptes = new ArrayList<>();
     }
 
-
-    // Add account
+    // Add account, ensuring no null accounts are added
     public void addCompte(Compte compte) {
-        comptes.add(compte);
+        if (compte != null) {
+            comptes.add(compte);
+        }
     }
 
-    // Gson JSON conversion methods
+    // JSON conversion methods using JsonConverter
     public String toJson() throws JsonProcessingException {
         return JsonConverter.toJson(this);
     }

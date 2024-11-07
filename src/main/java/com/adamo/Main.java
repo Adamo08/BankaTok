@@ -37,6 +37,25 @@ public class Main {
         }
         scanner.close();
         System.out.println("Application closed.");
+
+        Client client = new Client("C1","Nom","Prenmom","email@rr","Addre 123","098765");
+        Client client2 = new Client("C2","Nom2","Prenmom2","email2@rr","Addre 123","098765");
+        Banque banque = new Banque("B1","Maroc");
+        Banque banque2 = new Banque("B2","Maroc");
+        Compte compte = new Compte("CO1",Devise.MAD,client,banque,1200);
+
+        System.out.println(compte.toJson());
+        System.out.println(client.toJson());
+        System.out.println(banque.toJson());
+
+        client.addCompte(compte);
+        banque.addCompte(compte);
+
+        System.out.println(compte.toJson());
+        System.out.println(client.toJson());
+        System.out.println(banque.toJson());
+
+
     }
 
     // Display the start menu
@@ -60,10 +79,13 @@ public class Main {
         System.out.print("Enter your choice: ");
     }
 
+
     // Getting the choice
     private static int getChoice() {
         while (!scanner.hasNextInt()) {
+            System.out.println("\n==================================================");
             System.out.println("Invalid input. Please enter a number.");
+            System.out.println("==================================================\n");
             scanner.next();
         }
         int choice = scanner.nextInt();
@@ -350,23 +372,25 @@ public class Main {
             return;
         }
 
-        // Get Transaction Type
-        System.out.print("\tEnter Transaction Type (VIRINI/VIREST/VIRMULTA/VIRCHAC): ");
         TypeTransaction type;
-        try {
-            type = TypeTransaction.valueOf(scanner.nextLine().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid transaction type.");
-            return;
+
+        Banque senderBanque = sender.getBanque();
+        Banque receiverBanque = receiver.getBanque();
+
+        if (
+                senderBanque.equals(receiverBanque)
+        ){
+            type = TypeTransaction.VIRINI;
+        }
+        else if (
+                senderBanque.getPays().equals(receiverBanque.getPays())
+        ){
+            type = TypeTransaction.VIREST;
+        }
+        else{
+            type = TypeTransaction.VIRCHAC;
         }
 
-        // Check for valid transaction type and conditions
-        if (!isValidTransaction(type, sender, receiver)) {
-            System.out.println("\n==================================================");
-            System.out.println("\t\tInvalid transaction type for these accounts.");
-            System.out.println("==================================================\n");
-            return;
-        }
 
         // Get Transaction Reference and Amount
         System.out.print("\tEnter Reference: ");
@@ -377,13 +401,17 @@ public class Main {
             amount = scanner.nextDouble();
             scanner.nextLine();
         } catch (Exception e) {
+            System.out.println("\n==================================================");
             System.out.println("Invalid amount entered.");
+            System.out.println("==================================================\n");
             scanner.nextLine();
             return;
         }
 
         if (amount <= 0) {
-            System.out.println("Invalid transaction amount.");
+            System.out.println("\n==================================================");
+            System.out.println("\t\tInvalid transaction amount.");
+            System.out.println("==================================================\n");
             return;
         }
 
@@ -402,28 +430,6 @@ public class Main {
         }
     }
 
-
-
-    // Helper method to check if the transaction type is valid
-    private static boolean isValidTransaction(TypeTransaction type, Compte sender, Compte receiver) {
-        Banque senderBanque = sender.getBanque();
-        Banque receiverBanque = receiver.getBanque();
-
-        return switch (type) {
-            case VIRINI -> // Same bank and same country
-                    senderBanque.equals(receiverBanque) &&
-                            senderBanque.getPays().equals(receiverBanque.getPays());
-            case VIREST -> // Same country
-                    senderBanque.getPays().equals(receiverBanque.getPays());
-            case VIRMULTA -> // Different banks but same country
-                    senderBanque.getPays().equals(receiverBanque.getPays()) &&
-                            !senderBanque.equals(receiverBanque);
-            case VIRCHAC -> // Different banks and different countries
-                    !senderBanque.getPays().equals(receiverBanque.getPays()) &&
-                            !senderBanque.equals(receiverBanque);
-            default -> false;
-        };
-    }
 
     private static void listAllTransactions() {
         if (transactions.isEmpty()) {
@@ -445,5 +451,6 @@ public class Main {
             System.out.println("==================================================\n");
         }
     }
+
 
 }

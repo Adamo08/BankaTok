@@ -3,10 +3,10 @@ package com.adamo;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -16,10 +16,14 @@ public class Compte {
     private LocalDate dateUpdate;
     private Devise devise;
     private double balance;
+
+    @JsonBackReference
     private final Client client;
+
+    @JsonBackReference
     private final Banque banque;
 
-    // Constructor
+    // Constructor with null checks for client and banque
     public Compte(
             String numCompte,
             Devise devise,
@@ -27,6 +31,9 @@ public class Compte {
             Banque banque,
             double initialBalance
     ) {
+        if (client == null || banque == null) {
+            throw new IllegalArgumentException("Client and Banque must not be null");
+        }
         this.numCompte = numCompte;
         this.dateCreation = LocalDate.now();
         this.dateUpdate = LocalDate.now();
@@ -46,7 +53,6 @@ public class Compte {
         return true;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Compte compte) {
@@ -54,12 +60,13 @@ public class Compte {
         }
         return false;
     }
+
     @Override
     public int hashCode() {
         return this.numCompte.hashCode();
     }
 
-    // Gson JSON conversion methods
+    // JSON conversion methods using JsonConverter
     public String toJson() throws JsonProcessingException {
         return JsonConverter.toJson(this);
     }
