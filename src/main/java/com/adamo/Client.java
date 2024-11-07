@@ -1,14 +1,16 @@
 package com.adamo;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import com.google.gson.Gson;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class Client {
-    private final int numClient;
+    private final String numClient;
     private String nom;
     private String prenom;
     private String email;
@@ -18,7 +20,7 @@ public class Client {
 
     // Constructor
     public Client(
-            int numClient,
+            String numClient,
             String nom,
             String prenom,
             String email,
@@ -41,11 +43,11 @@ public class Client {
     }
 
     // Gson JSON conversion methods
-    public String toJson() {
-        return new Gson().toJson(this);
+    public String toJson() throws JsonProcessingException {
+        return JsonConverter.toJson(this);
     }
 
-    public static Client fromJson(String json) {
-        return new Gson().fromJson(json, Client.class);
+    public static Client fromJson(String json) throws IOException {
+        return JsonConverter.fromJsonToClient(json);
     }
 }
